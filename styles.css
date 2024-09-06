@@ -1,0 +1,24 @@
+body {
+    font: normal 400 16px/1.5 Verdana, Geneva, Tahoma, sans-serif
+}
+header {
+    display: flex;
+    justify-content: space-around;
+}
+nav > ul {
+    list-style-type: none; 
+    margin:0;  
+}
+.tabs {
+    display:inline-block;
+    margin: 3px 10px;
+    padding: 2px 10px;
+}
+.tabs:hover{
+    text-decoration: underline solid;
+    
+}
+.tabs#home-tab {
+    background-color: rgb(35, 18, 18);
+    color:white;
+}
