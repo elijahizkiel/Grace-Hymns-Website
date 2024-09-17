@@ -23,7 +23,7 @@ nav > ul {
 .tabs:active{
  background-color: #231212;   
 }
-article{
+article[class$="container"]{
     display: flex;
     flex-wrap: wrap;
 }
