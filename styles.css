@@ -23,3 +23,39 @@ nav > ul {
 .tabs:active{
  background-color: #231212;   
 }
+article{
+    display: flex;
+    flex-wrap: wrap;
+}
+.media-card {
+    width: 250px;
+    background-color: #e0dde0;
+    border-radius: 10px;
+    padding: 10px;
+    margin:10px 20px;
+}
+
+.media-card-thumbnail {
+    width: inherit;
+
+}
+.media-card-title {
+    display: inline-block;
+    margin: 3px auto;
+}
+.media-card p {
+    margin: 3px auto;
+    width: inherit;
+}
+.media-card .play-btn {
+    color:rgb(18, 130, 228);
+    margin: 0;
+    padding: 0;
+    position:relative;
+    font-size: 43px;
+    /* font: normal 600 2.7rem/1.5 Tahoma, san-serif; */
+    top: -25px;
+    left: 205px;
+    cursor: pointer;
+    outline:
+}
