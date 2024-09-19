@@ -83,4 +83,4 @@ async function populateSamples(){
         i++;
     }
 }
-populate();
+populateSamples();
