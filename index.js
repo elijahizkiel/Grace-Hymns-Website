@@ -123,4 +123,16 @@ async function populateAudioTab(){
     
     main.replaceWith(newMain);
 }
+
+function highlightActiveTab(event){
+    let tabs = document.querySelectorAll('.tabs');
+    
+    //remove active mark from current active tab
+    for(const tab of tabs){
+        tab.classList.remove('active');
+    } 
+
+    //marks current tab as active
+    event.target.classList.add('active');
+}
 populateSamples();
