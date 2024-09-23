@@ -136,3 +136,9 @@ function highlightActiveTab(event){
     event.target.classList.add('active');
 }
 populateSamples();
+
+var audioTab = document.getElementById("audio-tab");
+audioTab.addEventListener('click',(evt) => {
+    highlightActiveTab(evt);
+    populateAudioTab();
+});
