@@ -93,4 +93,27 @@ async function populateSamples(){
         i++;
     }
 }
+async function createAudioTab(){
+    let mainAudioTab = document.createElement('main');
+    let audioListSection = document.createElement('section');
+    let audioPlayingSection = document.createElement('section');
+    let audioLyricsSection = document.createElement('section');
+    let media = await getMediaInfo();
+    console.log("creating the tab");
+    mainAudioTab.className = "flex-container";
+    audioListSection.className = "flex-container";
+
+    for await(medium of media){
+        if (medium.type === 'audio'){
+            let mediaCard = createMediaCard(medium);
+            audioListSection.appendChild(mediaCard);
+        }
+    }
+    
+    mainAudioTab.appendChild(audioListSection);
+    mainAudioTab.appendChild(audioPlayingSection);
+    mainAudioTab.appendChild(audioLyricsSection);
+
+    return mainAudioTab;
+}
 populateSamples();
