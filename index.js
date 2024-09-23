@@ -116,4 +116,11 @@ async function createAudioTab(){
 
     return mainAudioTab;
 }
+
+async function populateAudioTab(){
+    let main = document.querySelector('main');//lookup the DOM element <main> and assign
+    let newMain = await createAudioTab();//create new <main> element for Audio tab
+    
+    main.replaceWith(newMain);
+}
 populateSamples();
