@@ -17,7 +17,7 @@ class Video extends HTMLMediaElement{
     }
 }
 
-function populateMediaCard(media){
+function createMediaCard(media){
     mediaCard = document.createElement('div');
     mediaCard.classList.add('media-card');
 
@@ -52,14 +52,17 @@ function populateMediaCard(media){
     mediaCard.appendChild(thumbnail);
     mediaCard.appendChild(playBtn);
     mediaCard.appendChild(mediaCardInfo);
-    
-    article = document.querySelector('.sample-'+media.type+'s-container');
-    article.appendChild(mediaCard);
+
+    return mediaCard;
 }
-async function populateSamples(){
+async function getMediaInfo() {
     const request = new Request("/JSON/Media.json");
     const response = await fetch(request);
     const media = await response.json();
+    return media;
+}
+async function populateSamples(){
+    let media = await getMediaInfo();
     var musics = [];
     var videos = [];
     for (i = 0; i < 25; i++){
@@ -73,13 +76,20 @@ async function populateSamples(){
         }
     }
     var i = 0;
+    let sampleVideoContainer = document.querySelector('.sample-videos-container');
+    let sampleAudioContainer = document.querySelector(".sample-audios-container");
+    
     while(i < 10 && i < videos.length && videos.length>0){
-        populateMediaCard(videos[i]);
+        mediumCard = createMediaCard(videos[i]);
+        sampleVideoContainer.appendChild(mediumCard);
         i++;
     }
+    
     i=0;
+    
     while(i < 10 && i < musics.length && musics.length>0){
-        populateMediaCard(musics[i]);
+        const mediumCard = createMediaCard(musics[i]);
+        sampleAudioContainer.appendChild(mediumCard);
         i++;
     }
 }
