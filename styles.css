@@ -5,6 +5,11 @@ body {
 header {
     display: flex;
     justify-content: space-around;
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    z-index: 1;
+    border-bottom: 1px solid #efefef;
 }
 nav > ul {
     list-style-type: none; 
