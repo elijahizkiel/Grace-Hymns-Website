@@ -38,15 +38,19 @@ nav > ul {
 }
 .media-card-as-list {
     height: 80px;
+    width: 100%;
     font-size: 12px;
-    margin:10px;
+    margin:3px;
     padding: 10px;
     border-radius: 15px;
     display:flex;
-    background-color: #e1dada;
+    background-color: #efefef;
 }
 .media-card-thumbnail {
     width: inherit;
+}
+.media-card-as-list .media-card-thumbnail{
+    width:fit-content;
 }
 .media-card-title {
     display: inline-block;
@@ -67,8 +71,24 @@ nav > ul {
     top: -25px;
     left: 150px;
 }
+.media-card-as-list .play-btn {
+    position: relative;
+    top: 0;
+    right: 0;
+}
 .play-btn {
     cursor: pointer;
+}
+.audio-playing-section {
+    width: 30%;
+}
+.audio-list-section{
+    height: 560px;
+    overflow-y: scroll;
+}
+.audio-lyrics-section {
+    width: 30%;
+    overflow-y: scroll;
 }
 footer {
     background-color: rgb(89, 87, 87);
