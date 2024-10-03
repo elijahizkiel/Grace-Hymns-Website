@@ -87,6 +87,10 @@ nav > ul {
 .audio-playing-section {
     width: 30%;
 }
+.playing-audio-thumbnail {
+    width: 80%;
+    margin: 20px 10%;
+}
 .audio-list-section{
     height: 560px;
     overflow-y: scroll;
@@ -94,6 +98,7 @@ nav > ul {
 .audio-lyrics-section {
     width: 30%;
     overflow-y: scroll;
+    text-align: center;
 }
 footer {
     background-color: rgb(89, 87, 87);
