@@ -17,40 +17,76 @@ class Video extends HTMLMediaElement{
     }
 }
 
-function createMediaControls(media){
+var playList = [];
+
+function createMediaControls(media, mediaCard){
     //add media controllers to the audio player section
     let mediaControls = document.createElement('div');
-    mediaControls.innerHTML=`<span class="material-symbols-outlined prev-btn">skip_previous</span>
-        <span class="material-symbols-outlined player-play-btn">pause_circle</span> 
-        <span class="material-symbols-outlined next-btn">skip_next</span>`;
-            
-    mediaControls.querySelector('.player-play-btn').addEventListener("click",(event)=>{
-        if(media.paused){
-            media.play();
-            event.target.textContent = 'pause_circle';
-            playButton = mediaCard.querySelector('.play-btn')
-            playButton.textContent = 'pause_circle';
-        }else{
-            media.pause();
-            event.target.textContent ='play_circle';
+    mediaControls.innerHTML=` <div class="control-btns">
+        <p class="material-symbols-outlined control-btn prev-btn">skip_previous</p>
+        <p class="material-symbols-outlined control-btn player-play-btn">pause_circle</p> 
+        <p class="material-symbols-outlined control-btn next-btn">skip_next</p>
+        <p class="material-symbols-outlined control-btn volume-up">volume_up</p>
+        <p class="material-symbols-outlined control-btn volume-down">volume_down</p>
+        <p class="material-symbols-outlined control-btn volume-mute">volume_off</p>
+        </div>`;
+    let time = document.createElement('p');
+    time.classList = 'progress-time';
+    let progress = document.createElement('progress');
+    progress.setAttribute('max', '1');
+       
+    media.addEventListener('timeupdate', () => {
+            progressTimeMin = Math.floor(media.currentTime/60);
+            progressTimeSec = Math.floor(media.currentTime - (progressTimeMin*60))
+            progressTime = String(progressTimeMin).padStart(2,'0') + ':' + String(progressTimeSec).padStart(2,'0');
+            totalDurationMinute = Math.floor(media.duration/60); 
+            totalDurationSec = Math.floor(media.duration - (totalDurationMinute * 60));
+            totalDuration = String(totalDurationMinute).padStart(2, '0') + ':' + String(totalDurationSec).padStart(2,'0');
+            time.textContent = `${progressTime}/${totalDuration}`;
+            progress.setAttribute('value', (media.currentTime / media.duration));
+    });
+    media.addEventListener('pause', () => {
+            mediaCard.querySelector('.play-btn').textContent = 'play_circle';
+    })
+    mediaControls.querySelector('.control-btns').querySelector('.player-play-btn')
+        .addEventListener("click", (event) => {
+            if(media.paused){
+                media.play();
+                event.target.textContent = 'pause_circle';
+                mediaCard.querySelector('.play-btn').textContent = 'pause_circle';
+            }else{
+                media.pause();
+                event.target.textContent ='play_circle';
 
-            for(playButton in mediaCard.querySelectorAll('.play-btn')){
-                playButton.textContent = 'play_circle';
-                console.log(playButton);
+                for(playButton in mediaCard.querySelectorAll('.play-btn')){
+                    playButton.textContent = 'play_circle';
+                }
             }
-        }
     });
     
-    mediaControls.querySelector('.next-btn').addEventListener('click', () =>{
-        // if(playList.length > 1 && playList.indexOf(audio) < playList.length - 2){
-            // audio = currentPlayList[currentPlayList.indexOf(audio)++];
-        // }else{
-            // audio.replaceWith()
-        // }
+    mediaControls.querySelector('.volume-up').addEventListener('click', () => {
+        if(media.volume <= 1) {media.volume = ((media.volume * 10) + 1)/10;}
+    });
+
+    mediaControls.querySelector('.volume-down').addEventListener('click', () => {
+        if(media.volume >= 0) {media.volume = ((media.volume * 10) - 1)/10;}
+    });
+
+    mediaControls.insertBefore(progress, mediaControls.querySelector('.control-btns'));
+    mediaControls.insertBefore(time, progress);
+    
+    mediaControls.querySelector('.control-btns').querySelector('.next-btn')
+      .addEventListener('click', () => {
+        if(playList.length > 1 && playList.indexOf(media) < playList.length - 2){
+            media.replaceWith(playList[playList.indexOf(media)++]);
+        } else {
+            media.currentTime = 0;
+        }
     })
 
-    mediaControls.querySelector('.prev-btn').addEventListener('click',() => {
-        if(playList.length > 1 && playList.indexOf(media) > 1){
+    mediaControls.querySelector('.control-btns').querySelector('.prev-btn')
+      .addEventListener('click', () => {
+        if(playList.length > 1 && playList.indexOf(media)){
             media.replaceWith(playList[playList.indexOf(media)--]);
         }
     });
@@ -73,6 +109,10 @@ function createMediaCard(media){
     title.classList.add("media-card-title");
     title.textContent = media.title;
     
+    // create and configure audio element
+    let audio = document.createElement('audio');
+    audio.src = "./audios/amharic/" + media.title + ".mp3";
+    
     //creating and configuring play button
     playBtn = document.createElement("span");
     playBtn.classList= "play-btn material-symbols-outlined";
@@ -82,13 +122,6 @@ function createMediaCard(media){
             if(event.target.textContent == "play_circle"){
                 //changing play btn to pause btn
                 event.target.textContent = "pause_circle";
-
-                // create and configure audio element
-                let audio = document.createElement('audio');
-                audio.src = "./audios/amharic/" + media.title + ".mp3";
-                audio.preload = "auto";
-                audio.controls = true;
-                audio.autoplay = true;
                 
                 if(document.getElementById("audio-tab").classList.contains('active')){
                     let playingAudioThumbnail = thumbnail;
@@ -104,10 +137,13 @@ function createMediaCard(media){
                     let mediaInfo = document.createElement('div');
                     mediaInfo.innerHTML = `<p> ${media.title}</p> <p> ${media.performer}</p>`;
                     
+                    // configuring media controls to control the audio
+                    let audioControls = createMediaControls(audio, mediaCard);
+
                     // creating lyrics containing DOM element
-                    let lyrics = document.createElement('p');
-                    lyrics.textContent = (media.lyrics == undefined || media.lyrics == '' 
-                        || media.lyrics == null)?"No lyrics": media.lyrics; 
+                    let lyrics = document.createElement('div');
+                    lyrics.innerHTML = (media.lyrics == undefined || media.lyrics == '' 
+                        || media.lyrics == null)?"No lyrics": `<pre>${media.lyrics}</pre>`; 
 
                     // setting width of media list section to one-third of the window
                     document.querySelector('.audio-list-section').style.width = '30%';
@@ -122,6 +158,9 @@ function createMediaCard(media){
                     audioPlayingSection.hasChildNodes?
                         audioPlayingSection.replaceChildren(playingAudioThumbnail, mediaInfo, audio, audioControls): 
                         audioPlayingSection.append(playingAudioThumbnail, mediaInfo, audio, audioControls);
+                    audio.preload = true;
+                    // audio.controls = true;
+                    audio.play();
                 }else {
                     highlightActiveTab(document.getElementById('audio-tab'));
                     
@@ -141,10 +180,11 @@ function createMediaCard(media){
     
                     // creating lyrics containing DOM element
                     let lyrics = document.createElement('div');
-                    lyrics.textContent = (media.lyrics == undefined || media.lyrics == null 
-                        || media.lyrics == '')? "No lyrics": media.lyrics;
+                    lyrics.innerHTML = (media.lyrics == undefined || media.lyrics == null 
+                        || media.lyrics == '')? "No lyrics": `<pre>${media.lyrics}</pre>`;
 
-                    let audioControls = createMediaControls(audio);
+                    // creating controlling btns for the audio
+                    let audioControls = createMediaControls(audio, mediaCard);
                     
                     // configuring media info 
                     let mediaInfo = document.createElement('div');
@@ -164,11 +204,15 @@ function createMediaCard(media){
                     audioPlayingSection.hasChildNodes?
                         audioPlayingSection.replaceChildren(playingAudioThumbnail, mediaInfo, audio, audioControls): 
                         audioPlayingSection.append(playingAudioThumbnail, mediaInfo, audio, audioControls);
+                    
+                    audio.preload = true;
+                    // audio.controls = true;
+                    audio.play();
                 }
             }else{
+                // changing pause btn to play btn
                 event.target.textContent = "play_circle";
                 audio.pause();
-                console.log(event.target);
             }
         }
     });
