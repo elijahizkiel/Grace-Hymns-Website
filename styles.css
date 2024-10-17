@@ -41,6 +41,9 @@ nav > ul {
     padding: 10px;
     margin-top:10px;
 }
+.media-card.dark {
+    border-top: 2px solid white
+}
 .media-card-as-list {
     height: 80px;
     width: 100%;
@@ -80,6 +83,16 @@ nav > ul {
     position: relative;
     top: 0;
     right: 0;
+}
+.media-card:hover {
+    border-left: 5px solid #231212;
+    border-bottom: 2px solid #231212;
+}
+.media-card.dark:hover {
+    border-left: 5px solid greenyellow;
+    border-bottom: 2px solid greenyellow;
+    border-top: none;
+    border-right: none;
 }
 .play-btn {
     cursor: pointer;
@@ -132,10 +145,16 @@ footer {
     overflow-x: hidden;
 }
 .dark {
-    color: white;
-    background: rgb(9, 1, 27) !important;
+    color: rgba(172, 255, 47, 0.849);
+    background: rgb(19, 4, 4) ;
 }
 .active.dark {
     color:black;
-    background-color: white!important;
+    background-color: greenyellow;
+}
+.progress-container.dark {
+    background-color: rgba(172, 255, 47, 0.269);
+}
+.progress-bar.dark {
+    background-color: greenyellow;
 }
