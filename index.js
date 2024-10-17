@@ -344,6 +344,15 @@ function highlightActiveTab(event){
     //marks current tab as active
     event.classList.add('active');
 }
+
+function darkMode() {
+    const elements = document.querySelectorAll('*');
+    for(element of elements){
+        element.classList.toggle('dark');
+        console.log(element);
+    }
+}
+
 populateSamples();
 
 var audioTab = document.getElementById("audio-tab");
@@ -352,3 +361,4 @@ audioTab.addEventListener('click',(evt) => {
     highlightActiveTab(tab);
     populateAudioTab();
 });
+document.getElementById("theme-toggler").addEventListener('click', darkMode);
