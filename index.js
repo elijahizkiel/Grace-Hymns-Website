@@ -23,18 +23,26 @@ function createMediaControls(media, mediaCard){
     //add media controllers to the audio player section
     let mediaControls = document.createElement('div');
     mediaControls.innerHTML=` <div class="control-btns">
-        <p class="material-symbols-outlined control-btn prev-btn">skip_previous</p>
-        <p class="material-symbols-outlined control-btn player-play-btn">pause_circle</p> 
-        <p class="material-symbols-outlined control-btn next-btn">skip_next</p>
-        <p class="material-symbols-outlined control-btn volume-up">volume_up</p>
-        <p class="material-symbols-outlined control-btn volume-down">volume_down</p>
-        <p class="material-symbols-outlined control-btn volume-mute">volume_off</p>
+        <span class="material-symbols-outlined control-btn prev-btn">skip_previous</span>
+        <span class="material-symbols-outlined control-btn player-play-btn">pause_circle</span> 
+        <span class="material-symbols-outlined control-btn next-btn">skip_next</span>
+        <span class="material-symbols-outlined control-btn volume-mute">volume_up</span>
+        <span class="control-btn volume-up">+</span>
+        <span class="control-btn volume-indicator"></span>
+        <span class="control-btn volume-down">-</span>
         </div>`;
+    let volumeIndicator = mediaControls.querySelector('.volume-indicator');
+    volumeIndicator.textContent = Math.floor(media.volume * 100) + '%';
     let time = document.createElement('p');
     time.classList = 'progress-time';
-    let progress = document.createElement('progress');
-    progress.setAttribute('max', '1');
-       
+    // progress container
+    let progressContainer = document.createElement('div');
+    progressContainer.className = 'progress-container';
+    //  progress indicator
+    let progress = document.createElement('div');
+    progress.className = 'progress-bar';
+
+    // listening to media progress changes size of progress-bar
     media.addEventListener('timeupdate', () => {
             progressTimeMin = Math.floor(media.currentTime/60);
             progressTimeSec = Math.floor(media.currentTime - (progressTimeMin*60))
@@ -43,11 +51,19 @@ function createMediaControls(media, mediaCard){
             totalDurationSec = Math.floor(media.duration - (totalDurationMinute * 60));
             totalDuration = String(totalDurationMinute).padStart(2, '0') + ':' + String(totalDurationSec).padStart(2,'0');
             time.textContent = `${progressTime}/${totalDuration}`;
-            progress.setAttribute('value', (media.currentTime / media.duration));
+            progress.style.width =((media.currentTime / media.duration) * 100)+ '%';
     });
+
     media.addEventListener('pause', () => {
             mediaCard.querySelector('.play-btn').textContent = 'play_circle';
+            mediaControls.querySelector('.player-play-btn').textContent = 'play_circle';
     })
+
+    media.addEventListener('play', () => {
+        mediaCard.querySelector('.play-btn').textContent = 'pause_circle';
+        mediaControls.querySelector('.player-play-btn').textContent = 'pause_circle';
+    })
+
     mediaControls.querySelector('.control-btns').querySelector('.player-play-btn')
         .addEventListener("click", (event) => {
             if(media.paused){
@@ -65,15 +81,18 @@ function createMediaControls(media, mediaCard){
     });
     
     mediaControls.querySelector('.volume-up').addEventListener('click', () => {
-        if(media.volume <= 1) {media.volume = ((media.volume * 10) + 1)/10;}
+        if(media.volume < 1) {media.volume = ((media.volume * 10) + 0.5)/10;}
+        volumeIndicator.textContent = Math.floor(media.volume * 100) + '%';
     });
 
     mediaControls.querySelector('.volume-down').addEventListener('click', () => {
-        if(media.volume >= 0) {media.volume = ((media.volume * 10) - 1)/10;}
+        if(media.volume >= 0) {media.volume = ((media.volume * 10) - 0.5)/10;}
+        volumeIndicator.textContent = Math.floor(media.volume * 100) + '%';
     });
 
-    mediaControls.insertBefore(progress, mediaControls.querySelector('.control-btns'));
-    mediaControls.insertBefore(time, progress);
+    progressContainer.append(progress);
+    mediaControls.insertBefore(progressContainer, mediaControls.querySelector('.control-btns'));
+    mediaControls.insertBefore(time, progressContainer);
     
     mediaControls.querySelector('.control-btns').querySelector('.next-btn')
       .addEventListener('click', () => {
@@ -91,6 +110,14 @@ function createMediaControls(media, mediaCard){
         }
     });
 
+    mediaControls.querySelector('.volume-mute').addEventListener('click', () => {
+        media.muted = media.muted?false:true; 
+        mediaControls.querySelector('.volume-mute').textContent = media.muted?'volume_off':'volume_up';
+    });
+
+    mediaControls.querySelector('.volume-mute').addEventListener('kbd', (event) => {
+        // if()
+    })
     return mediaControls;
 }
 
