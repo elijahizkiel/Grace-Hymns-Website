@@ -100,10 +100,42 @@ nav > ul {
     overflow-y: scroll;
     text-align: center;
 }
+.progress-time {
+    font-size: 12px;
+    margin: 0 auto;
+}
+.progress-container {
+    margin:5px;
+    height:3px;
+    background-color:#e0e0e0;
+}
+.progress-bar {
+    background-color:#232323;
+    width: 0%;
+    height: 100%;
+}
+.control-btns{
+    cursor:pointer;
+}
+.volume-up, .volume-down, .volume-indicator {
+    font-weight: 700;
+    display: inline-block;
+    margin: auto 5px;
+    vertical-align: top;
+    font-size: smaller;
+}
 footer {
     background-color: rgb(89, 87, 87);
     width: 105%;
     position: absolute;
     left:-20px;
     overflow-x: hidden;
+}
+.dark {
+    color: white;
+    background: rgb(9, 1, 27) !important;
+}
+.active.dark {
+    color:black;
+    background-color: white!important;
 }
