@@ -18,7 +18,7 @@ class Video extends HTMLMediaElement{
 }
 
 var playList = [];
-
+let theme = 'light';
 function createMediaControls(media, mediaCard){
     //add media controllers to the audio player section
     let mediaControls = document.createElement('div');
@@ -260,6 +260,12 @@ function createMediaCard(media){
     mediaCard.appendChild(playBtn);
     mediaCard.appendChild(mediaCardInfo);
 
+    if(theme == 'dark'){
+        let elements = mediaCard.querySelector('*');
+        for(element of elements){
+            element.classList.add('dark');
+        }
+    }
     return mediaCard;
 }
 async function getMediaInfo() {
@@ -311,7 +317,11 @@ async function createAudioTab(){
     audioListSection.className ="audio-list-section flex-container";
     audioPlayingSection.classList.add('audio-playing-section');
     audioLyricsSection.classList.add('audio-lyrics-section');
-
+    if(theme == 'dark') {
+        audioListSection.classList.add('dark');
+        audioLyricsSection.classList.add('dark');
+        audioPlayingSection.classList.add('dark');
+    }
     for await(medium of media){
         if (medium.type === 'audio'){
             let mediaCard = createMediaCard(medium);
@@ -346,6 +356,7 @@ function highlightActiveTab(event){
 }
 
 function darkMode() {
+    theme = theme=='dark'? 'light': 'dark';
     const elements = document.querySelectorAll('*');
     for(element of elements){
         element.classList.toggle('dark');
