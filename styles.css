@@ -42,7 +42,7 @@ nav > ul {
     margin-top:10px;
 }
 .media-card.dark {
-    border-top: 2px solid white
+    border-top: 2px solid rgb(72, 4, 79)
 }
 .media-card-as-list {
     height: 80px;
@@ -89,8 +89,8 @@ nav > ul {
     border-bottom: 2px solid #231212;
 }
 .media-card.dark:hover {
-    border-left: 5px solid greenyellow;
-    border-bottom: 2px solid greenyellow;
+    border-left: 5px solid #ad49e1;
+    border-bottom: 2px solid #ad49e1;
     border-top: none;
     border-right: none;
 }
@@ -145,16 +145,16 @@ footer {
     overflow-x: hidden;
 }
 .dark {
-    color: rgba(172, 255, 47, 0.849);
-    background: rgb(19, 4, 4) ;
+    color: #ebd3f8;
+    background: #2e073f;
 }
 .active.dark {
     color:black;
-    background-color: greenyellow;
+    background-color: #ebd3f8;
 }
 .progress-container.dark {
-    background-color: rgba(172, 255, 47, 0.269);
+    background-color: #ebd3f8;
 }
 .progress-bar.dark {
-    background-color: greenyellow;
+    background-color: #231212;
 }
