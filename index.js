@@ -1,27 +1,30 @@
 class Music extends Audio {
-    constructor(title, performer, author, type){
+    constructor(title, performer, author, type, lang){
         super( "./audios/amharic/"+title+".mp3");
         this.title = title;
         this.performer = performer;
         this.author = author;
         this.type = type;
+        this.lang = lang;
     }
 }
-class Video extends HTMLMediaElement{
-    constructor(title, performer, author, type){
+class Video extends HTMLVideoElement{
+    constructor(title, performer, author, type, lang){
         super();
         this.title = title;
         this.performer = performer;
         this.author = author;
         this.type = type;
+        this.lang = lang;
     }
 }
-
+customElements.define('video-player', Video, {extends: 'video'});
 var playList = [];
 let theme = 'light';
 function createMediaControls(media, mediaCard){
     //add media controllers to the audio player section
     let mediaControls = document.createElement('div');
+    mediaControls.className = 'media-controls';
     mediaControls.innerHTML=` <div class="control-btns">
         <span class="material-symbols-outlined control-btn prev-btn">skip_previous</span>
         <span class="material-symbols-outlined control-btn player-play-btn">pause_circle</span> 
@@ -54,18 +57,19 @@ function createMediaControls(media, mediaCard){
             progress.style.width =((media.currentTime / media.duration) * 100)+ '%';
     });
 
+    playerPlayBTN = mediaControls.querySelector('.control-btns').querySelector('.player-play-btn');
+    playerPlayBTN.textContent = media.paused? 'play_circle': 'pause_circle';
     media.addEventListener('pause', () => {
             mediaCard.querySelector('.play-btn').textContent = 'play_circle';
-            mediaControls.querySelector('.player-play-btn').textContent = 'play_circle';
+            playerPlayBTN.textContent = 'play_circle';
     })
 
     media.addEventListener('play', () => {
         mediaCard.querySelector('.play-btn').textContent = 'pause_circle';
-        mediaControls.querySelector('.player-play-btn').textContent = 'pause_circle';
+        playerPlayBTN.textContent = 'pause_circle';
     })
 
-    mediaControls.querySelector('.control-btns').querySelector('.player-play-btn')
-        .addEventListener("click", (event) => {
+    playerPlayBTN.addEventListener("click", (event) => {
             if(media.paused){
                 media.play();
                 event.target.textContent = 'pause_circle';
@@ -137,9 +141,15 @@ function createMediaCard(media){
     title.textContent = media.title;
     
     // create and configure audio element
-    let audio = document.createElement('audio');
-    audio.src = "./audios/amharic/" + media.title + ".mp3";
-    
+    if(media.type === 'audio'){
+        var audio = document.createElement('audio');
+        audio.src = `./audios/${media.lang}/${media.title}.mp3`;
+    }else if(media.type === 'video'){
+        var video = document.createElement('video');
+        video.setAttribute('is','video-player');
+        video.src = `./videos/${media.lang}/${media.title}.mp4`;
+    }
+
     //creating and configuring play button
     playBtn = document.createElement("span");
     playBtn.classList= "play-btn material-symbols-outlined";
@@ -241,6 +251,54 @@ function createMediaCard(media){
                 event.target.textContent = "play_circle";
                 audio.pause();
             }
+        }else if(media.type === 'video'){
+            if(event.target.textContent == "play_circle"){
+                // change play btn to pause btn
+                event.target.textContent = "pause_circle";
+                
+                if(document.getElementById("video-tab").classList.contains('active')){
+                    let videoPlayingSection = document.querySelector('.video-playing-section');
+                    let videoPlayer = document.createElement('div');
+                    videoPlayer.classList = 'video-player';
+                    
+                    videoControls = createMediaControls(video, mediaCard);
+                    
+                    videoPlayer.append(video, videoControls);
+
+                    let videoInfo = document.createElement('div');
+                    videoInfo.className = 'video-info';
+                    console.log(media.title + " " + media.performer+"hlfdlkjdfs");
+                    videoInfo.innerHTML = `<p> ${media.title} - ${media.performer}</p>`;
+
+                    videoPlayer.insertBefore(videoInfo, videoControls);
+
+                    videoPlayingSection.append(videoPlayer);
+                } else {
+                    highlightActiveTab(document.getElementById('video-tab'));
+
+                    let videoTab = await createVideoTab();
+                    let videoPlayingSection = videoTab.querySelector('.video-playing-section');
+
+                    document.querySelector('main').replaceWith(videoTab);
+
+                    let videoPlayer = document.createElement('div');
+                    videoPlayer.classList = 'video-player';
+                    
+                    videoControls = createMediaControls(video, mediaCard);
+                    
+                    videoPlayer.append(video, videoControls);
+
+                    let videoInfo = document.createElement('div');
+                    videoInfo.innerHTML = `<p> ${video.title} - ${video.performer}</p>`;
+
+                    videoPlayer.insertBefore(videoInfo, videoControls);
+                    video.controls = true;
+                    videoPlayingSection.append(videoPlayer);
+                }
+
+            }else {
+                event.target.textContent = 'play_circle';
+            }
         }
     });
 
@@ -261,7 +319,7 @@ function createMediaCard(media){
     mediaCard.appendChild(mediaCardInfo);
 
     if(theme == 'dark'){
-        let elements = mediaCard.querySelector('*');
+        let elements = mediaCard.querySelectorAll('*');
         for(element of elements){
             element.classList.add('dark');
         }
@@ -281,10 +339,10 @@ async function populateSamples(){
     for (i = 0; i < 25; i++){
         medium = media[i];
         if(medium.type === "audio"){
-            const audio = new Music(medium.title, medium.performer, medium.author, medium.type);
+            const audio = new Music(medium.title, medium.performer, medium.author, medium.type, medium.lang);
             musics.push(audio);
         }else if(medium.type === "video"){
-            const video = new Video(medium.title, medium.performer, medium.author. medium.type);
+            const video = new Video(medium.title, medium.performer, medium.author, medium.type, medium.lang);
             videos.push(video);
         }
     }
@@ -329,11 +387,37 @@ async function createAudioTab(){
         }
     }
     
-    mainAudioTab.appendChild(audioListSection);
-    mainAudioTab.appendChild(audioPlayingSection);
-    mainAudioTab.appendChild(audioLyricsSection);
-
+    mainAudioTab.append(audioListSection,audioPlayingSection, audioLyricsSection);
+    
     return mainAudioTab;
+}
+async function createVideoTab() {
+    // declaring tab and sections inside it
+    let mainVideoTab = document.createElement('main');
+    let videoListSection = document.createElement('section');
+    let videoPlayingSection = document.createElement('section');
+
+    // requesting infos about the media in storage
+    let media = await getMediaInfo();
+
+    // assign class for Elements
+    videoListSection.classList = 'flex-container video-list-section';
+    videoPlayingSection.classList = 'video-playing-section';
+    if(theme == 'dark'){
+        videoListSection.classList.add('dark');
+        videoPlayingSection.classList.add('dark');
+    }
+    
+    // populating the tab with media-cards of videos
+    for await(medium of media){
+        if(medium.type === 'video'){
+            const mediaCard = createMediaCard(medium);
+            videoListSection.appendChild(mediaCard);
+        }
+    }
+
+    mainVideoTab.append(videoListSection, videoPlayingSection);
+    return mainVideoTab;
 }
 
 async function populateAudioTab(){
@@ -360,7 +444,6 @@ function darkMode() {
     const elements = document.querySelectorAll('*');
     for(element of elements){
         element.classList.toggle('dark');
-        console.log(element);
     }
 }
 
