@@ -29,6 +29,9 @@ nav > ul {
  background-color: #231212;
  color: white;   
 }
+#theme-toggler{
+    cursor: pointer;
+}
 .flex-container{
     display: flex;
     flex-wrap: wrap;
