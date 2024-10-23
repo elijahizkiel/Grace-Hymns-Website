@@ -267,12 +267,14 @@ function createMediaCard(media){
 
                     let videoInfo = document.createElement('div');
                     videoInfo.className = 'video-info';
-                    console.log(media.title + " " + media.performer+"hlfdlkjdfs");
                     videoInfo.innerHTML = `<p> ${media.title} - ${media.performer}</p>`;
 
                     videoPlayer.insertBefore(videoInfo, videoControls);
 
-                    videoPlayingSection.append(videoPlayer);
+                    videoPlayingSection.hasChildNodes()?
+                      videoPlayingSection.replaceChild(videoPlayer, 
+                        videoPlayingSection.querySelector('.video-player')):
+                      videoPlayingSection.append(videoPlayer);
                 } else {
                     highlightActiveTab(document.getElementById('video-tab'));
 
@@ -289,11 +291,14 @@ function createMediaCard(media){
                     videoPlayer.append(video, videoControls);
 
                     let videoInfo = document.createElement('div');
-                    videoInfo.innerHTML = `<p> ${video.title} - ${video.performer}</p>`;
+                    videoInfo.innerHTML = `<p> ${media.title} - ${media.performer}</p>`;
 
                     videoPlayer.insertBefore(videoInfo, videoControls);
-                    video.controls = true;
-                    videoPlayingSection.append(videoPlayer);
+
+                    videoPlayingSection.hasChildNodes(videoPlayer)?
+                      videoPlayingSection.replaceChild(videoPlayer, 
+                        videoPlayingSection.querySelector('.video-player')):
+                      videoPlayingSection.append(videoPlayer);
                 }
 
             }else {
@@ -416,7 +421,7 @@ async function createVideoTab() {
         }
     }
 
-    mainVideoTab.append(videoListSection, videoPlayingSection);
+    mainVideoTab.append(videoPlayingSection, videoListSection);
     return mainVideoTab;
 }
 
