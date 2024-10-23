@@ -425,10 +425,14 @@ async function createVideoTab() {
     return mainVideoTab;
 }
 
-async function populateAudioTab(){
-    let main = document.querySelector('main');//lookup the DOM element <main> and assign
-    let newMain = await createAudioTab();//create new <main> element for Audio tab
-    
+async function populateTab(tab){
+    let main = document.querySelector('main');// lookup the DOM element <main> and assign
+    let newMain;
+    if(tab == 'audio') {
+        newMain = await createAudioTab();// create new <main> element for Audio tab
+    } else if (tab == 'video'){
+        newMain = await createVideoTab();// create new <main> element for video tab
+    }
     main.replaceWith(newMain);
 }
 
@@ -456,8 +460,13 @@ populateSamples();
 
 var audioTab = document.getElementById("audio-tab");
 audioTab.addEventListener('click',(evt) => {
-    let tab = evt.target;
-    highlightActiveTab(tab);
-    populateAudioTab();
+    highlightActiveTab(evt.target);
+    populateTab('audio');
+});
+
+var videoTab = document.getElementById('video-tab');
+videoTab.addEventListener('click', (evt) => {
+    highlightActiveTab(evt.target);
+    populateTab('video');    
 });
 document.getElementById("theme-toggler").addEventListener('click', darkMode);
