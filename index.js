@@ -332,7 +332,7 @@ function createMediaCard(media){
     return mediaCard;
 }
 async function getMediaInfo() {
-    const request = new Request("/JSON/Media.json");
+    const request = new Request("Grace-Hymns-Website/JSON/Media.json");
     const response = await fetch(request);
     const media = await response.json();
     return media;
